@@ -30,6 +30,7 @@ This repo consolidates prior community research with original Deepfield ERT anal
 | [potassium](potassium/) | Mirai variant with SHELL/SHOUT reverse-shell protocol on the C2 channel, three rotating campaigns from one codebase |
 | [trees4sale](trees4sale/) | Residential-proxy relay (peer4you proxyware) with the DDoS engine removed; exposes exits directly via UPnP RELAY port-mappings |
 | [vibenet](vibenet/) | Custom DDoS-and-proxy family whose latest no-libc Linux build ships its own TLS/QUIC/HTTP3 stack to flood at Layer 7 behind a browser fingerprint, with on-chain ENS command-and-control |
+| [apex](apexx/) | Custom DDoS-and-proxy family whose latest no-libc Linux build ships its own TLS/QUIC/HTTP3 stack to flood at Layer 7 behind a browser fingerprint, with on-chain ENS command-and-control |
 
 ## Reports
 

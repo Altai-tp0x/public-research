@@ -1,0 +1,7 @@
+ip_address,port,role,organization,notes
+31.56.209.86,9111,c2_fallback_server,Hardcoded C2 IP,Default static C2 destination if CNC_IP is unset
+8.8.8.8,53,dns_resolver,Google Public DNS,Hardcoded DNS server queried for hostname resolution
+103.122.64.156,8080,l7_http_proxy,Proxy Relay,Embedded HTTP proxy relay for Layer 7 anonymized floods
+111.119.162.248,10915,l7_http_proxy,Proxy Relay,Embedded HTTP proxy relay for Layer 7 anonymized floods
+134.209.29.120,8080,l7_http_proxy,DigitalOcean,Embedded HTTP proxy relay for Layer 7 anonymized floods
+144.217.82.40,80,l7_http_proxy,OVH Hosting,Embedded HTTP proxy relay for Layer 7 anonymized floods

@@ -1,0 +1,4 @@
+domain,role,port,notes
+wemqmewkqewq.work.gd,c2_primary_domain,9111,Dynamic primary C2 domain resolved at execution
+wemqmewkqewq.work.gd,dropper_http_staging,80,Payload delivery host for automated wget spreader downloads
+wemqmewkqewq.work.gd,dropper_tftp_staging,69,Payload delivery host for automated TFTP spreader downloads

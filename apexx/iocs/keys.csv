@@ -1,0 +1,11 @@
+parameter,value,details
+stream_cipher_low,0x7F4A7C15,LFSR 64-bit state low multiplier constant
+stream_cipher_high,0x9E3779B9,LFSR state high multiplier (Golden Ratio 2^32/phi)
+stream_cipher_state_0,0xCAFEBABE,Default state seed word 0
+stream_cipher_state_1,0xDEADBEEF,Default state seed word 1
+stream_cipher_seed_bytes,"0x2e, 0x62616561",Hardcoded file offset 0x2D0C4 seed words
+auth_token,milk-c2-K3y-2026,Botnet operator authorization string in APEXX framework
+abstract_socket_xor_key,0x5A,Masking byte used to scramble abstract socket qv3b_lock_9f3a
+c2_wire_encoding,Hex-ASCII + Stream Cipher,Hex-encoded ASCII command stream decrypted via LFSR stream cipher
+reg_header,REGISTER linux %s %d %lu %lu,"Initial bot registration string reporting arch, cores, total RAM, free RAM"
+debug_log,/tmp/apexx.log,Local debug log file gated by APEXX_DEBUG env var
