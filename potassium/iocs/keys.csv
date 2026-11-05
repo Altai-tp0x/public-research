@@ -1,7 +1,12 @@
 key_type,value,notes
-chacha20_key,5a3f2e7b8c9d0a6e3b4f7c8a1d5c2b0d6f1a0c3e2d8e4a091c7e5a4d3c2b6a08,32-byte IETF ChaCha20 key; byte-identical across every potassium sample we have analysed
-chacha20_nonce,4a1b00ff2d7c3a1200010305,12-byte IETF ChaCha20 nonce; sits at key+0x20 in every build
-chacha20_counter,1,First 64-byte keystream block is skipped
-xor_key,ED,Single byte used for all C2 wire encoding (registration body and steady-state traffic in both directions)
+chacha20_key,5a3f2e7b8c9d0a6e3b4f7c8a1d5c2b0d6f1a0c3e2d8e4a091c7e5a4d3c2b6a08,32-byte IETF ChaCha20 key; 100% byte-identical across every potassium sample analyzed (Gen 1-4)
+chacha20_nonce,4a1b00ff2d7c3a1200010305,12-byte IETF ChaCha20 nonce; sits at key+0x20 in .data across all builds
+chacha20_counter,1,First 64-byte keystream block skipped (esi=1)
+chacha20_mask,c0ddd5c4cbc185969788c7dcd1c085ce,XOR 0xA5 masked constant ('expand 32-byte k') introduced in Gen 4 (Oct 2026) for AV evasion
+xor_wire_key,ED,Single byte used for all C2 wire encoding (registration body and steady-state traffic in both directions)
 bot_seed,14861879,Fixed 8-digit seed every potassium bot appends random digits to for its bot ID
-killer_port,1234,TCP listener bound to discovered egress IP (127.0.0.1 fallback) as a single-instance lock
+campaign_tag,reactors,October 2026 campaign tag passed via argv[1] into registration packet
+killer_port,1234,TCP listener bound to discovered egress IP (127.0.0.1 fallback) as single-instance lock (Gen 1-3)
+ipc_locker,0x40081f,Dynamic Unix/IPC socket listener with automatic worker child kill and re-exec (Gen 4)
+ens_resolver,0xF29100983E058B709F3D539b0c765937B804AC15,Ethereum ENS public resolver contract queried via JSON-RPC text('ip') selector 0x59d1d43c
+operator_wallet,0x32ab9ef9123a495ee7e68c3c18de94c401e8da7b,Controlling registrant wallet for 2sexy4u.eth and sushiconsumer.eth
