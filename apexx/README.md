@@ -4,7 +4,7 @@
 
 ## Overview
 
-APEXX is a multi-architecture IoT botnet and self-propagating worm first analyzed by Nokia Deepfield ERT in November 2026. The threat operates on the **Milk C2** framework (internal auth key: `milk-c2-K3y-2026`), deploying payloads via an autonomous 4-port spreader targeting Telnet (ports 23/2323), Android Debug Bridge (port 5555), and Web SSL management services (port 8443).
+APEXX is a multi-architecture IoT botnet and self-propagating worm first captured from live delivery infrastructure and analyzed in November 2026. The threat operates on the **Milk C2** framework (internal auth key: `milk-c2-K3y-2026`), deploying payloads via an autonomous 4-port spreader targeting Telnet (ports 23/2323), Android Debug Bridge (port 5555), and Web SSL management services (port 8443).
 
 What distinguishes APEXX from standard Mirai forks is its implementation of a custom **LFSR / XorShift stream cipher** driven by the Golden Ratio constant (`0x9E3779B9`) and 64-bit multiplier `0x7F4A7C15`. Wire communication uses newline-delimited hex-encoded ASCII over TCP. The bot enforces single-instance execution via Linux abstract UNIX domain sockets masked with runtime XOR keys, masquerades as kernel threads (`kworker/0:1H`), installs multi-tiered persistence across `/etc/rc.local`, `/etc/cron.d/qv3b`, and `/etc/init.d/qv3b`, actively terminates rival botnet processes, and executes 26 distinct Layer 4/7 denial-of-service attack vectors supported by an embedded army of 990+ public proxy relays.
 
