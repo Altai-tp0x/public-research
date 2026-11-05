@@ -1,6 +1,6 @@
 # Potassium
 
-*Last updated: 2026-05-21*
+*Last updated: 2026-11-05*
 
 ## Overview
 
