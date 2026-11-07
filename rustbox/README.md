@@ -6,7 +6,7 @@
 
 Rustbox is an advanced, memory-safe multi-architecture botnet and worm written in modern Rust (`rustc 1.99.1-nightly`, October 2026). First captured from live delivery infrastructure and analyzed in November 2026, the threat represents a new generation of IoT malware that replaces conventional unauthenticated plaintext protocols with **Curve25519 (X25519) Diffie-Hellman key exchange**, **HKDF/HMAC-SHA-512 key derivation**, and **ChaCha20-Poly1305 AEAD authenticated wire encryption** over TCP (connecting to `77.239.124.167:29444`).
 
-What distinguishes Rustbox from legacy Mirai and Gafgyt variants is its deep cross-platform weaponization across both enterprise Linux servers and embedded Android operating environments. It incorporates an autonomous **7-CVE spreader** targeting major router and IoT platforms (Huawei, GPON, Realtek, Netgear, Hikvision, DrayTek, and TP-Link), anonymous in-memory execution via Linux `memfd_create`, kernel worker process masquerading (`kworker/u8:2`), an aggressive **competitor killer** terminating 28 rival botnet strains, full **Magisk / KernelSU root module persistence**, and an unauthenticated persistent **ADB TCP backdoor on port 12108**.
+What distinguishes Rustbox from legacy Mirai and Gafgyt variants is its deep cross-platform weaponization across both enterprise Linux servers and embedded Android operating environments. It incorporates an autonomous **7-CVE spreader** targeting major router and IoT platforms (Huawei, GPON, Realtek, Netgear, Hikvision, DrayTek, and TP-Link), anonymous in-memory execution via Linux `memfd_create`, kernel worker process masquerading (`kworker/u8:2`), an aggressive **competitor killer** terminating 28 rival botnet strains, full **Magisk / KernelSU root module persistence**, an unauthenticated persistent **ADB TCP backdoor on port 12108**, and an advanced Layer 4/7 denial-of-service engine featuring a custom-built **embedded TLS 1.3 stack** and **HTTP/2 Rapid Reset** multiplexing.
 
 ## Report
 
@@ -14,7 +14,7 @@ See [`report.md`](report.md) for the complete technical dossier: X25519 cryptogr
 
 ## Technical summary
 
-- **Lineage:** Native 64-bit Rust botnet / worm (`service rustbox`, slogan `rustbox: memory safe. system optimized.`). Statically linked ELF PIE compiled with `rustc 1.99.1-nightly`.
+- **Lineage:** Native 8-architecture multi-target Rust botnet / worm (standard Linux GNU and Android Bionic builds across x86-64, x86, ARMv7, and AArch64) (`service rustbox`, slogan `rustbox: memory safe. system optimized.`). Statically linked ELF PIE compiled with `rustc 1.99.1-nightly`.
 - **C2 Transport & Wire Encryption:** Raw TCP on port 29444 (`77.239.124.167:29444`). Custom binary framing using client magic `RBX1` (`0x31584252`) and server magic `RBX2` (`0x32584252`).
 - **Cryptography:** Ephemeral X25519 Diffie-Hellman key agreement with scalar clamping, HKDF/HMAC-SHA-512 session key derivation, and ChaCha20-Poly1305 AEAD authenticated stream encryption.
 - **Device Fingerprinting:** 16-byte unique identifier token (`rustbox-device-v1`) generated from SHA-256 hashing of `/etc/machine-id`, `/var/lib/dbus/machine-id`, `/proc/sys/kernel/random/boot_id`, and NIC MAC addresses.
@@ -31,7 +31,14 @@ See [`report.md`](report.md) for the complete technical dossier: X25519 cryptogr
   - Hikvision webLanguage blind command injection (CVE-2021-36260, ports 80/8000)
   - DrayTek Vigor keyPath command injection (CVE-2020-8515, ports 80/443)
   - TP-Link LuCI form country injection (CVE-2020-1389, port 80)
-- **Denial-of-Service Flood Engine:** Dispatches HTTP/2 Rapid Reset & multiplex streams (`PRI * HTTP/2.0`), HTTP/1.1 TLS flood with Chrome 131 browser emulation, and UDP volumetric flooding with real-time bandwidth reporting (`[BW]|pps=...|mbps=...|active=...`).
+- **Denial-of-Service Flood Engine:**
+  - **Automated Protocol Routing:** Automatically routes target ports 80, 443, and 8080 to the Layer 7 TLS engine, and all other ports to the Layer 4 UDP engine.
+  - **C2 Protection Whitelist:** Automatically aborts attacks targeting ports 29444 and 29596.
+  - **Embedded TLS 1.3 Client:** Custom zero-dependency TLS 1.3 stack (`TLS_AES_128_GCM_SHA256` [0x1301] and `TLS_CHACHA20_POLY1305_SHA256` [0x1303]).
+  - **HTTP/2 Rapid Reset (`PRI * HTTP/2.0`):** Multiplexed parallel stream flooding with rapid RST_STREAM cancellation frames.
+  - **Browser Emulation:** Spoofs modern Chrome 131 headers with `zstd` and Brotli compression.
+  - **Layer 4 UDP Flooding:** High-performance user-space `Xoshiro256**` PRNG generating randomized payload bytes at line rate, paired with non-blocking socket buffer tuning (`SO_SNDBUF`, `SO_PRIORITY`).
+  - **Real-Time Telemetry:** Monotonic background timer transmits live network output metrics back to C2 (`[BW]|pps=...|mbps=...|active=...`).
 
 ## Indicators
 

@@ -26,7 +26,7 @@ Beyond its cryptographic transport layer, Rustbox demonstrates deep dual-ecosyst
 - **Autonomous 7-CVE spreader (`SELFREP`).** Features an integrated multi-threaded IPv4 scanner with RFC1918/bogon exclusion filters. Weaponizes 7 distinct router and IoT exploits: Huawei HG532 UPnP (CVE-2017-17215), DASAN GPON (CVE-2018-10561/10562), Realtek miniigd (CVE-2014-8361), Netgear setup.cgi (CVE-2016-6277), Hikvision webLanguage (CVE-2021-36260), DrayTek keyPath (CVE-2020-8515), and TP-Link LuCI (CVE-2020-1389).
 - **Stealth & defense evasion.** Evades disk forensics by migrating execution into anonymous memory file descriptors (`memfd_create('worker')` -> `RBX_MEMFD=1` -> `memfd:(deleted)`). Rewrites process titles to kernel worker threads (`kworker/u8:2`). Scans runtime environment for honeypot artifacts (`cowrie`, `kippo`, `dionaea`, `conpot`, `tarpit`, `canary`, `shadowserver`).
 - **Aggressive competitor killer (`LOCKER`).** Audits `/proc/*/comm` and `/proc/*/cmdline` to terminate 28 rival botnet, worm, and cryptomining families (`xmrig`, `kinsing`, `mirai`, `gafgyt`, `redtail`, etc.), kills unapproved binaries running in temporary folders, and hijacks competing listening ports.
-- **Layer 4 & Layer 7 volumetric flood engine.** Dispatches HTTP/2 Rapid Reset (`PRI * HTTP/2.0`), TLS HTTP/1.1 floods with modern browser emulation (Chrome 131 User-Agent, Brotli/zstd compression), and UDP volumetric packet streams, backed by real-time bandwidth reporting (`[BW]|pps=...|mbps=...|active=...`).
+- **Advanced Layer 4 & Layer 7 volumetric flood engine.** Custom embedded TLS 1.3 client engine (no external OpenSSL dependencies) supporting HTTP/2 Rapid Reset (`PRI * HTTP/2.0`) and Chrome 131 browser emulation, coupled with high-speed UDP packet flooding driven by an in-memory `Xoshiro256**` PRNG, automatic port-based protocol routing, C2 self-protection whitelisting, and real-time bandwidth telemetry (`[BW]|pps=...|mbps=...|active=...`).
 
 ## Timeline
 
@@ -37,13 +37,22 @@ Beyond its cryptographic transport layer, Rustbox demonstrates deep dual-ecosyst
 | 2026-11-04 | Initial multi-port scanning observed exploiting Huawei HG532 (port 37215) and Realtek miniigd (port 52869) |
 | 2026-11-07 | Discovery, capture, and reverse-engineering triage of `linux-x86_64` (1,013,128 bytes) |
 
-## Samples
+## Samples (8-Architecture Build Suite)
 
-| Hash (SHA-256) | Architecture | Size | Toolchain | C2 Endpoint |
-|---|---|---|---|---|
-| `88466d25ef2de742baad70b68f65e0d3d0f1741723a2ee44043f273b8591b8f2` | AMD x86-64 | 1,013,128 B | rustc 1.99.1 (Static PIE) | `77.239.124.167:29444` |
+Analysis of the actor's live delivery infrastructure confirms a comprehensive multi-architecture release matrix spanning both standard enterprise Linux (GNU) and embedded Android (Bionic/NDK) platforms across 4 distinct CPU architectures (x86-64, x86 32-bit, ARMv7, and AArch64):
 
-The sample is a 64-bit ELF Position-Independent Executable (`ET_DYN`) targeting Linux x86-64 platforms. All Rust standard library and third-party crate dependencies are statically compiled into the binary. Machine-readable cryptographic hashes are cataloged in [`iocs/hashes.csv`](iocs/hashes.csv).
+| Filename | Platform / OS | Architecture (Target Triple) | Size | SHA-256 | MD5 |
+|---|---|---|---|---|---|
+| `linux-x86_64` | Enterprise Linux | x86-64 (`x86_64-unknown-linux-gnu`) | 1,013,128 B | `88466d25ef2de742baad70b68f65e0d3d0f1741723a2ee44043f273b8591b8f2` | `bb8a673f95b9be0a293edc1af64f868f` |
+| `linux-x86` | Enterprise Linux | x86 32-bit (`i686-unknown-linux-gnu`) | 990,408 B | `61e7cd6fb04e57b5ae10e3557c6f890f3817e53a277fa2a9d186f36d92c5ddf9` | `d6e4546660199815b0035c2c6f48274e` |
+| `linux-arm7` | Embedded Linux / IoT | ARMv7 (`armv7-unknown-linux-gnueabihf`) | 876,868 B | `e078d1ac5608efd4153be6868b368496e18bf5370797121711e353723d1346ab` | `b54e7763c88b85d169a52f9ff58b419f` |
+| `linux-aarch64` | Embedded Linux / Cloud | AArch64 (`aarch64-unknown-linux-gnu`) | 866,968 B | `214b350e22cdb47253459d6bc6c1ffcd0d602e876c882fe2d13612e7962df947` | `5d6af1735d9ecaea2d27eb920d380e16` |
+| `android-x86_64` | Android OS / Emulators | x86-64 (`x86_64-linux-android`) | 881,200 B | `440a7bc4e1eb517f3f79e97f1fa7132849d4c0a70061ed10a4ad1b523bafa799` | `fe86cb235ae7c4b0dbed0c0946abceae` |
+| `android-x86` | Android OS / Emulators | x86 32-bit (`i686-linux-android`) | 912,920 B | `1d9eaca558251260885655c2e041e9b921737de366ffa1a4c5873b9afccc81be` | `0c8a0e795505f5b8283549f9557c43ef` |
+| `android-arm7` | Android OS / Smart Devices | ARMv7 (`armv7-linux-androideabi`) | 587,180 B | `ebcaa0e1d55725b54fef180ffa8a3227d648cf4148f239c7037c8282cf19692c` | `42ab03998cecd13edddadfe05420a3a3` |
+| `android-aarch64` | Modern Android Devices | AArch64 (`aarch64-linux-android`) | 771,904 B | `3da96b9dd7448b4c38cd6542883f6a2fa9e62ef07d1b3c71ea2afb9e7a47cb9f` | `3603e0dc3d9496eac5edacd6f336c540` |
+
+All 8 binaries are statically linked Position-Independent Executables (`ET_DYN`) sharing the identical cryptographic C2 infrastructure (`77.239.124.167:29444`), Curve25519/ChaCha20-Poly1305 protocol framing, persistence hooks, and 7-CVE spreader modules. Full machine-readable cryptographic hashes are cataloged in [`iocs/hashes.csv`](iocs/hashes.csv).
 
 ---
 
@@ -280,28 +289,99 @@ The scanner generates random 32-bit IPv4 addresses, filtering out non-routable, 
 
 ---
 
-## Denial-of-Service (DDoS) flood engine
+## Denial-of-Service (DDoS) flood engine & attack mechanics
 
-Rustbox implements two high-throughput denial-of-service modules managed by `bot/src/floods/`:
+Rustbox implements an advanced, multi-tier denial-of-service architecture managed across `bot/src/floods/tlsclient.rs` and `bot/src/floods/udp.rs`. Dispatched via the encrypted `FLOOD` C2 command, the attack engine combines automated transport routing, custom cryptographic TLS 1.3 client mechanics, user-space line-rate PRNG packet synthesis, and strict self-preservation safety guards.
 
-1. **Layer 7 TLS & HTTP/2 Flood Engine (`tlsclient.rs`):**
-   - **HTTP/2 Rapid Reset & Multiplex Flood:** Transmits the HTTP/2 connection preface (`PRI * HTTP/2.0
+### Automated target routing & infrastructure guard
+
+When the dispatcher parses the target port (`0x7e9f3`–`0x7ea24`), it applies an automated protocol routing matrix:
+
+```
+[Inbound FLOOD Command]
+        |
+        v
+Check Target Port:
+  +---> Port 80 (0x50), 443 (0x1bb), 8080 (0x1f90) -----> Route to Layer 7 Engine (tlsclient.rs)
+  |                                                        - HTTP/2 Rapid Reset & Multiplex Flood
+  |                                                        - HTTP/1.1 TLS Pipeline & POST Flood
+  |
+  +---> Arbitrary / High UDP Port ----------------------> Route to Layer 4 Engine (udp.rs)
+  |                                                        - Line-Rate UDP Volumetric Flood (Xoshiro256**)
+  |
+  +---> Blacklisted Port (29444 [0x7304] or 29596) ------> DROP / ABORT ATTACK (C2 Self-Preservation)
+```
+
+- **C2 Friendly-Fire Whitelist:** To prevent misconfigured operators or rival bots from turning Rustbox swarms against its own command nodes, the engine hardcodes an immutable blacklist check (`0x7ea16`, `0x7ea1e`). Any attack command targeting TCP/UDP port `29444` (`0x7304`) or `29596` (`0x739c`) is discarded before thread initialization.
+- **Duration Clamping:** The execution duration argument is strictly bounded (`0x7ebf5`). If an operator requests an attack longer than 3,600 seconds (1 hour, `0xe10`), the bot clamps the runtime to 3,600 seconds, preventing worker starvation.
+- **Concurrency Bounds:** Spawns worker threads configured with 2 MB stack allocation (`RUST_MIN_STACK = 0x200000`). If the maximum concurrent attack capacity is exceeded, it returns `FLOOD state=busy|why=max_concurrent`.
+
+---
+
+### Layer 7 TLS & HTTP/2 flood engine (`tlsclient.rs`)
+
+Unlike conventional IoT bots that rely on standard `curl`, `wget`, or dynamic OpenSSL libraries (which are frequently missing or broken across embedded architectures), Rustbox embeds a **custom-built, native Rust TLS 1.3 client stack** within `bot/src/floods/tlsclient.rs`.
+
+1. **Embedded TLS 1.3 Client & Cipher Suite Negotiation (`0x71f81`–`0x71f93`):**
+   The client initiates raw TLS 1.3 handshakes directly over non-blocking TCP sockets, supporting modern high-security cipher suites:
+   - `0x1301`: `TLS_AES_128_GCM_SHA256`
+   - `0x1303`: `TLS_CHACHA20_POLY1305_SHA256`
+   Application-Layer Protocol Negotiation (ALPN) negotiates either `h2` (HTTP/2) or `http/1.1`.
+2. **HTTP/2 Rapid Reset & Multiplex Flood (`0x17864`):**
+   - Transmits the official HTTP/2 connection preface: `PRI * HTTP/2.0
 
 SM
 
-`) and opens thousands of concurrent multiplexed streams per TCP connection, issuing rapid stream reset requests to exhaust target server CPU resources.
-   - **Realistic Browser Emulation:** Forwards modern Chrome 131 header signatures:
-     ```http
-     User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
-     Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-     Accept-Encoding: gzip, deflate, br, zstd
-     Accept-Language: en-US,en;q=0.9
-     Sec-Ch-Ua: "Chromium";v="131", "Not_A Brand";v="24"
-     Sec-Ch-Ua-Platform: "Windows"
-     Upgrade-Insecure-Requests: 1
-     ```
-2. **Layer 4 UDP Volumetric Engine (`udp.rs`):**
-   - Generates randomized UDP datagram floods across variable ports, saturating target bandwidth and edge firewalls.
+`.
+   - Opens thousands of concurrent multiplexed streams per established TLS connection without waiting for response frames.
+   - Dispatches continuous stream cancellation frames (`RST_STREAM`) immediately following stream creation headers, replicating the **HTTP/2 Rapid Reset** vulnerability pattern to exhaust web server worker threads and CPU scheduling queues.
+3. **Realistic Browser Fingerprint Emulation:**
+   To bypass Cloudflare, Akamai, and AWS WAF rate-limiting rules, outbound HTTP request frames are populated with realistic Chrome 131 browser headers:
+   ```http
+   User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+   Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8
+   Accept-Encoding: gzip, deflate, br, zstd
+   Accept-Language: en-US,en;q=0.9
+   Sec-Ch-Ua: "Chromium";v="131", "Not_A Brand";v="24"
+   Sec-Ch-Ua-Platform: "Windows"
+   Upgrade-Insecure-Requests: 1
+   Connection: keep-alive
+   Cache-Control: no-cache
+   Pragma: no-cache
+   ```
+4. **HTTP/1.1 Pipeline & Form POST Floods:**
+   When targeting standard HTTP endpoints, the bot initiates continuous HTTP/1.1 pipelined request floods or heavy `POST` request streams with `Content-Type: application/x-www-form-urlencoded`.
+
+---
+
+### Layer 4 UDP volumetric flood engine (`udp.rs`)
+
+For non-web targets, Rustbox deploys a high-throughput UDP packet flooding engine optimized for maximum packet-per-second (PPS) generation:
+
+1. **User-Space PRNG Packet Synthesis (`Xoshiro256**`, `0x5f30e`–`0x5f33f`):**
+   To avoid the heavy syscall overhead of calling `/dev/urandom` or `getrandom()` for every packet, the UDP worker initializes an in-memory `Xoshiro256**` pseudo-random generator:
+   ```rust
+   // Disassembled instruction loop (0x5f30e - 0x5f33f):
+   let result = (s1.wrapping_mul(5)).rotate_left(7).wrapping_mul(9);
+   let t = s1 << 17;
+   s2 ^= s0;
+   s3 ^= s1;
+   s1 ^= s2;
+   s0 ^= s3;
+   s2 ^= t;
+   s3 = s3.rotate_left(45);
+   ```
+   This generator synthesizes randomized payload bytes and randomizes destination port numbers at line rate directly in user-space registers.
+2. **Kernel Socket Optimizations (`0x5f586`–`0x5f647`):**
+   Before initiating packet transmission, the worker tunes raw Linux socket parameters via `setsockopt`:
+   - Enlarges kernel socket send buffer sizes (`SO_SNDBUF` / `SO_SNDBUFFORCE`) to prevent buffer exhaustion drops.
+   - Configures `SO_PRIORITY` to prioritize outbound flood datagrams over local system traffic.
+   - Configures non-blocking asynchronous transmission with non-blocking timeouts (`SO_SNDTIMEO`).
+3. **Real-Time Bandwidth & Telemetry Beaconing (`0x5bb80`):**
+   A dedicated monotonic background timer (`clock_gettime(CLOCK_MONOTONIC)`) audits transmitted packet counters and byte volumes every second, reporting live telemetry beacons back across the encrypted C2 wire:
+   ```
+   [BW]|pps=<pps>|mbps=<mbps>|active=<worker_threads>
+   ```
 
 ---
 
@@ -313,6 +393,8 @@ SM
 - Initial outbound packet payload starting with 4-byte ASCII magic `RBX1` (`0x52 0x42 0x58 0x31`) followed by a 32-byte public key and 16-byte device ID.
 - Inbound TCP handshake reply starting with 4-byte ASCII magic `RBX2` (`0x52 0x42 0x58 0x32`).
 - Listening TCP socket on port `12108` answering ADB authentication handshakes on Android endpoints.
+- High-volume UDP datagram streams emanating from random high ports targeting victim IP addresses.
+- High-frequency HTTP/2 stream resets or pipelined GET/POST requests containing Chrome 131 User-Agent and `zstd` encodings.
 - Outbound HTTP POST requests targeting TCP ports 37215 or 52869 containing SOAP bodies with `DeviceUpgrade:1` or `WANIPConnection:1`.
 
 ### Host indicators
