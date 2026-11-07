@@ -1,0 +1,2 @@
+sha256,md5,sha1,arch,size,toolchain,first_seen,threat,notes
+88466d25ef2de742baad70b68f65e0d3d0f1741723a2ee44043f273b8591b8f2,bb8a673f95b9be0a293edc1af64f868f,3894cb350d06af2ec72ff6458c900cb58a3f9b0b,x86-64,1013128,rustc 1.99.1 (LLD 23.1.1 / GCC 9.4.0),2026-11-07,Rustbox,Statically linked 64-bit ELF PIE; X25519/ChaCha20-Poly1305 encrypted C2; 7 router exploits; Linux & Android persistence

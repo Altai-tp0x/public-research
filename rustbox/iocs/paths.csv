@@ -1,0 +1,23 @@
+path,type,platform,notes
+/dev/shm/.rbx_lock,lock,Linux,Advisory filesystem single-instance execution lock
+/var/tmp/.rbx_lock,lock,Linux,Advisory filesystem single-instance execution lock (fallback)
+/data/local/tmp/.rbx_lock,lock,Android,Advisory filesystem single-instance execution lock on Android
+/var/tmp/.rbx_ledger,ledger,Linux,Execution history and state ledger
+/dev/shm/.rbx_ledger,ledger,Linux,Execution history and state ledger
+/data/local/tmp/.rbx_ledger,ledger,Android,Execution history and state ledger
+/tmp/.rbx_wd.lock,watchdog,Linux,Watchdog thread heartbeat lock
+/dev/shm/.rbx_wd.lock,watchdog,Linux,Watchdog thread heartbeat lock
+/etc/systemd/system/rustbox.service,persistence,Linux,Systemd auto-restart service unit
+/etc/init.d/rustbox,persistence,Linux,SysV init persistence script
+/etc/rc.local,persistence,Linux,System startup script hook
+/etc/cron.d/rustbox,persistence,Linux,Crontab hourly/reboot persistence
+/etc/profile.d/rustbox.sh,persistence,Linux,Interactive shell login persistence hook
+~/.bashrc,persistence,Linux,User shell profile hook (# rustbox)
+~/.zshrc,persistence,Linux,User shell profile hook (# rustbox)
+/data/adb/modules/rustbox/module.prop,persistence,Android,Magisk / KernelSU root persistence module definition
+/data/adb/service.d/rustbox.sh,persistence,Android,Magisk late-start service boot script
+/data/adb/post-fs-data.d/rustbox.sh,persistence,Android,Magisk post-fs boot script
+/system/etc/init.d/99rustbox,persistence,Android,AOSP / LineageOS init.d boot script
+/system/etc/init/rustbox.rc,persistence,Android,Android init.rc service definition (service rustbox)
+/usr/local/bin/.rustbox,staging,Linux,Primary hidden binary installation path
+/data/local/tmp/.srvc,staging,Android,Android staging and payload dropper directory

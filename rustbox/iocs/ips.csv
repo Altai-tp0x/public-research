@@ -1,0 +1,5 @@
+ip,port,proto,role,asn_org,country,first_seen,status,notes
+77.239.124.167,29444,tcp,c2_primary,RIPE NCC / Hosting Provider,EU,2026-11-07,active,Primary Rustbox C2 server; binary encrypted framing (RBX1/RBX2); X25519 ECDH handshake
+,12108,tcp,adb_backdoor,,,2026-11-07,active,Persistent Android Debug Bridge (adbd) TCP root listening port injected via setprop persist.adb.tcp.port 12108
+,37215,tcp,exploit_target,,,2026-11-07,active,Huawei HG532 UPnP SOAP RCE (CVE-2017-17215)
+,52869,tcp,exploit_target,,,2026-11-07,active,Realtek miniigd SOAP AddPortMapping RCE (CVE-2014-8361)
