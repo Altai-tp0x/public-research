@@ -30,7 +30,8 @@ This repo consolidates prior community research with original Deepfield ERT anal
 | [potassium](potassium/) | Mirai variant with SHELL/SHOUT reverse-shell protocol on the C2 channel, three rotating campaigns from one codebase |
 | [trees4sale](trees4sale/) | Residential-proxy relay (peer4you proxyware) with the DDoS engine removed; exposes exits directly via UPnP RELAY port-mappings |
 | [vibenet](vibenet/) | Custom DDoS-and-proxy family whose latest no-libc Linux build ships its own TLS/QUIC/HTTP3 stack to flood at Layer 7 behind a browser fingerprint, with on-chain ENS command-and-control |
-| [apex](apexx/) | Custom DDoS-and-proxy family whose latest no-libc Linux build ships its own TLS/QUIC/HTTP3 stack to flood at Layer 7 behind a browser fingerprint, with on-chain ENS command-and-control |
+| [apexx](apexx/) | Multi-architecture IoT botnet and worm on the Milk C2 framework with Golden Ratio LFSR stream cipher, abstract socket mutexes, 4-port spreader, and 26-vector flood engine backed by a 990+ proxy relay pool |
+| [rustbox](rustbox/) | Native 8-architecture Rust botnet and worm with X25519 / ChaCha20-Poly1305 encrypted C2, Android Magisk root persistence, ADB TCP backdoor (port 12108), 7-CVE IoT spreader, and embedded TLS 1.3 / HTTP/2 Rapid Reset flood engine |
 
 ## Reports
 
