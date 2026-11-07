@@ -133,7 +133,8 @@ Decrypted C2 payload frames are tokenized by whitespace and dispatched through `
 ### Real-time telemetry reporting
 
 Every second during attack execution, worker threads collect network metrics and transmit real-time telemetry beacons back to the operator (`bot/src/report.rs`, `0x5bb80`):
-```
+
+```text
 [BW]|pps=<packets_per_sec>|mbps=<megabits_per_sec>|active=<worker_threads>
 ```
 
@@ -204,7 +205,7 @@ On traditional Linux hosts, Rustbox installs survival hooks across seven distinc
 ### Mutual exclusion & single-instance enforcement
 
 To prevent race conditions between infected worker threads, Rustbox enforces mutual exclusion via two distinct mechanisms:
-1. **Linux Abstract UNIX Domain Socket:** Binds to ` rustbox:instance:v<tag>`. Because abstract sockets reside in kernel memory and leave no filesystem footprint, they evade standard file-deletion cleanup scripts. The length is strictly bounded against `SUN_LEN` (108 bytes, `0x6c2a0`).
+1. **Linux Abstract UNIX Domain Socket:** Binds to `\0rustbox:instance:v<tag>`. Because abstract sockets reside in kernel memory and leave no filesystem footprint, they evade standard file-deletion cleanup scripts. The length is strictly bounded against `SUN_LEN` (108 bytes, `0x6c2a0`).
 2. **Filesystem Advisory Locks & Ledgers:** Creates fallback lock files across `/dev/shm/.rbx_lock`, `/var/tmp/.rbx_lock`, and `/data/local/tmp/.rbx_lock`, alongside execution history ledgers (`.rbx_ledger`).
 
 ---
@@ -399,7 +400,7 @@ For non-web targets, Rustbox deploys a high-throughput UDP packet flooding engin
 
 ### Host indicators
 
-- Linux abstract UNIX domain socket: ` rustbox:instance:v` visible in `ss -xl` or `/proc/net/unix`.
+- Linux abstract UNIX domain socket: `\0rustbox:instance:v` visible in `ss -xl` or `/proc/net/unix`.
 - Presence of filesystem lock files: `/dev/shm/.rbx_lock`, `/var/tmp/.rbx_lock`, or `/data/local/tmp/.rbx_lock`.
 - Existence of Magisk module directory: `/data/adb/modules/rustbox/module.prop` containing `id=rustbox`.
 - System property `persist.adb.tcp.port` set to `12108` (`getprop persist.adb.tcp.port`).
